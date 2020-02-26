@@ -5,16 +5,20 @@ class Simulator:
     energy_usage = 0
     average_energy = 0
     current_heat = 0
+    current_temp = 0
     outdoor_heat = 0
+    outdoor_heat_rate = 0
     heat_latency = 0
     heat_rate = 0
     t = 0
 
-    def __init__(self, latency, heat_rate):
+    def __init__(self, latency, heat_rate, outdoor_heat_rate):
         self.heat_latency = latency
         self.heat_rate = heat_rate
+        self.outdoor_heat_rate = outdoor_heat_rate
         self.current_heat = np.random.randint(0, 1000)
-        self.outdoor_heat = 0
+        self.current_temp = np.random.randint(0, 1000)
+        self.outdoor_heat = np.random.randint(0, 1000)
         self.energy_usage = 0
         self.average_energy = 0
         self.t = 0
@@ -23,7 +27,10 @@ class Simulator:
         return self
 
     def __next__(self):
+        self.outdoor_heat += np.random.normal(0, 1)
         self.current_heat += np.random.normal(0, 10)
+        self.current_heat += (self.outdoor_heat - self.current_heat) * self.outdoor_heat_rate
+        self.current_temp += (self.current_heat - self.current_temp) * self.heat_latency
         self.updateEnergy()
         return self
 

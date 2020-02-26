@@ -9,7 +9,7 @@ class SmartThemostat:
 
     def __init__(self, target, maxsteps):
         self.t = 0
-        self.sim = Simulator(latency=0.5, heat_rate=5)
+        self.sim = Simulator(latency=0.05, heat_rate=5, outdoor_heat_rate=0.05)
         self.simsteps = maxsteps
         self.target_temp = target
 
@@ -20,9 +20,9 @@ class SmartThemostat:
         if self.t < self.simsteps:
             state = next(self.sim)
             print(state.current_heat)
-            if state.current_heat > self.target_temp:
+            if state.current_temp > self.target_temp:
                 self.sim.cool()
-            elif state.current_heat < self.target_temp:
+            elif state.current_temp < self.target_temp:
                 self.sim.heat()
             self.t += 1
             return self
